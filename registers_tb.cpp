@@ -1,11 +1,11 @@
 #include <memory>
 
 #include "Vregisters.h"
-#include "support/catch.hpp"
-//#include "verilated.h"
+#include "catch.hpp"
+#include "test_types.hpp"
 
 TEST_CASE("Testing Catch + Verilator", "[]") {
-  auto sut = std::make_unique<Vregisters>();
+  SUT::Tester<Vregisters> Sut;
   /*Vour* top = new Vour;
   while (!Verilated::gotFinish()) {
     top->eval();
