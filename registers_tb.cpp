@@ -5,11 +5,8 @@
 #include "test_types.hpp"
 
 TEST_CASE("Testing Catch + Verilator", "[]") {
-  SUT::Tester<Vregisters> Sut;
-  /*Vour* top = new Vour;
-  while (!Verilated::gotFinish()) {
-    top->eval();
-  }
-  delete top;*/
-  REQUIRE(true == true);
+  tbpp::BaseClockedTB<Vregisters> TB;
+  TB.sut->write_data = true;
+  TB.Run();
+  REQUIRE(TB.sut->write_data == TB.sut->read_data);
 }

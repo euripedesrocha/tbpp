@@ -1,26 +1,26 @@
 #pragma once
 #include <memory>
 
-namespace SUT {
+namespace tbpp {
 
-template <class VerilatedSut>
-class Tester {
-  struct EndSimulation {
-    void operator()(VerilatedSut* p) {
+template <class Verilated>
+struct BaseClockedTB {
+  struct StopSimulation {
+    auto operator()(Verilated* p) {
       if (p) p->final();
       delete p;
-    };
+    }
   };
+  std::unique_ptr<Verilated, StopSimulation> sut;
+  BaseClockedTB() : sut(new Verilated){};
 
-  std::unique_ptr<VerilatedSut, EndSimulation> system_model;
-
- public:
-  Tester() : system_model(new VerilatedSut) {}
-
-  void ClockCycle() {
-    system_model->clk = 1;
-    system_model->eval();
-    system_model->clk = 0;
-  };
+  void Cycle(std::size_t nCycles = 1) {
+    for (std::size_t executed = 0; executed < nCycles; ++executed) {
+      sut->clk = 1;
+      sut->eval();
+      sut->clk = 0;
+    }
+  }
 };
-}  // namespace SUT
+
+}  // namespace tbpp
