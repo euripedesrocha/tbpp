@@ -4,14 +4,16 @@
 namespace tbpp {
 
 template <class Verilated>
+struct StopSimulation {
+  auto operator()(Verilated* p) {
+    if (p) p->final();
+    delete p;
+  }
+};
+
+template <class Verilated>
 struct BaseClockedTB {
-  struct StopSimulation {
-    auto operator()(Verilated* p) {
-      if (p) p->final();
-      delete p;
-    }
-  };
-  std::unique_ptr<Verilated, StopSimulation> sut;
+  std::unique_ptr<Verilated, StopSimulation<Verilated>> sut;
   BaseClockedTB() : sut(new Verilated){};
 
   void Cycle(std::size_t nCycles = 1) {
