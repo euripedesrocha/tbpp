@@ -1,0 +1,15 @@
+CAPI=2:
+name: mutalabs:test:tbpp:0.1
+description: Simple Verilator testbench support library
+
+filesets:
+  tbpp:
+    files:
+      - tbpp/catch2/catch.hpp : {is_include_file: true}
+      - tbpp/tbpp/tbpp.hpp : {is_include_file: true}
+      - tbpp/source/catch_main.cpp
+    file_type: cppSource
+
+targets:
+  default:
+    filesets: [tbpp]
