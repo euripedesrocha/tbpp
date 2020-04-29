@@ -1,0 +1,16 @@
+name: tbpp
+channels:
+  - conda-forge
+  - timvideos
+  - defaults
+dependencies:
+  - cmake=3.17
+  - clang=10.0.0
+  - clang-tools=10.0.0
+  - cppcheck
+  - python
+  - verilator
+  - pip
+  - pip:
+      - fusesoc
+      - ninja
