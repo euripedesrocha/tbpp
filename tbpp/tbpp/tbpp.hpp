@@ -1,5 +1,6 @@
 #pragma once
 
+#include <experimental/type_traits>
 #include <memory>
 #include <string>
 #include <type_traits>
@@ -10,6 +11,13 @@
 namespace tbpp {
 
 namespace detail {
+
+template <typename T>
+using time_and_dump_t = decltype(std::declval<T>().time_and_dump());
+
+template <typename T>
+using supports_trace = std::experimental::is_detected<time_and_dump_t, T>;
+
 template <class Dut>
 struct stop_simulation {
   auto operator()(Dut* p) {
@@ -18,16 +26,10 @@ struct stop_simulation {
   }
 };
 
-template <class Dut>
-class has_trace_file {
- public:
-  enum { value = true };
-};
-
 template <class ClockedDut>
 auto simulation_step(ClockedDut& dut) {
   dut->eval();
-  if constexpr (has_trace_file<ClockedDut>::value) {
+  if constexpr (supports_trace<ClockedDut>::value) {
     dut.time_and_dump();
   };
 }
@@ -50,7 +52,8 @@ class trace_file<Dut, true> {
     delete trace;
   }
   auto start(std::string const file_name, std::size_t const level) {
-    static_cast<Dut>(*this)->trace(trace, level);
+    auto& dut = static_cast<Dut&>(*this);
+    dut->trace(trace, level);
     open(file_name.c_str());
   }
   void time_and_dump() {
@@ -75,7 +78,8 @@ auto run(Dut& dut, std::size_t n_cycles = 1) {
 }
 
 template <class Dut, bool should_trace = false>
-class clocked_tb : public detail::trace_file<Dut, should_trace> {
+class clocked_tb
+    : public detail::trace_file<clocked_tb<Dut, should_trace>, should_trace> {
  public:
   clocked_tb() : dut(new Dut){};
 
