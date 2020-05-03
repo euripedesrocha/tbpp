@@ -13,12 +13,13 @@ This can be used as a fusesoc core.
 
 For simple combinational designs tbpp::base_tb provides a simple class that eliminates the need to delete the model when it goes out of scope.
 
-# clocked_tb
+## clocked_tb
 
-Most of designs are complex and use a clock to work. This class aims to help on writing complex tests. At this moment the class only adds helper functions to execute cycles of clock and to enable tracing to a file when needed. 
+Most of designs are complex and use a clock to work. This class aims to help on writing complex tests. At this moment the class only adds helper functions to execute cycles of clock and to enable tracing to a file when needed.
+
+At this moment the only implication of this class usage is that the clock signal must be named clk.
 
 The original idea of this code is to use with [Catch2](https://github.com/catchorg/Catch2) as in the example below. 
-Usage
 
 ```cpp
 constexpr auto enable_tracing = true;
@@ -35,3 +36,7 @@ TEST_CASE("Example") {
   tbpp::run(dut, 50);
 } 
 ```
+
+## Future
+
+In the future I intend to add Bus Functional Model support functions and class.
